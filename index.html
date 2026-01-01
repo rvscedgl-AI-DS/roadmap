@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Technical career roadmaps for undergraduate students in AI and Data Science at RVS College of Engineering.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Add jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -44,20 +43,22 @@
         /* ========== SIDEBAR WITH COLLEGE BRANDING ========== */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-dark) 0%, #1f2937 100%);
-            color: white;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--primary-dark);
             padding: 0;
             display: flex;
             flex-direction: column;
             box-shadow: var(--shadow-lg);
-            position: relative;
+            position: fixed;
             z-index: 10;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .college-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .logo-container {
@@ -68,17 +69,17 @@
         }
 
         .logo-placeholder {
-			width: 60px;
-			height: 60px;
-			background: white; /* White background for logo */
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border: 2px solid rgba(255, 255, 255, 0.1);
-			overflow: hidden; /* Ensures logo doesn't overflow */
-			padding: 3px; /* Small padding for logo */
-		}
+            width: 60px;
+            height: 60px;
+            background: var(--primary-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 3px;
+        }
 
         .logo-placeholder span {
             font-size: 24px;
@@ -90,12 +91,12 @@
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 4px;
-            color: white;
+            color: var(--primary-dark);
         }
 
         .college-info .department {
             font-size: 12px;
-            color: #93c5fd;
+            color: var(--primary-blue);
             letter-spacing: 0.5px;
             font-weight: 500;
         }
@@ -116,7 +117,7 @@
 
         .sidebar-subtitle {
             font-size: 11px;
-            color: #9ca3af;
+            color: var(--secondary-gray);
             letter-spacing: 0.5px;
             text-transform: uppercase;
             font-weight: 500;
@@ -126,6 +127,24 @@
             padding: 20px;
             overflow-y: auto;
             flex: 1;
+        }
+
+        .sidebar-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .sidebar-section {
@@ -140,7 +159,7 @@
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #9ca3af;
+            color: var(--secondary-gray);
             margin-bottom: 14px;
             font-weight: 600;
         }
@@ -148,7 +167,7 @@
         .role {
             padding: 14px 16px;
             margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.03);
             border-radius: var(--radius);
             cursor: pointer;
             font-size: 14px;
@@ -158,25 +177,26 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--primary-dark);
         }
 
         .role:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
             transform: translateX(4px);
         }
 
         .role.active {
-            background: rgba(59, 130, 246, 0.2);
+            background: rgba(59, 130, 246, 0.15);
             border-color: var(--primary-light);
-            color: #93c5fd;
+            color: var(--primary-blue);
         }
 
         .badge {
             display: inline-block;
             padding: 2px 8px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary-blue);
             border-radius: 4px;
             font-size: 11px;
             font-weight: 600;
@@ -188,6 +208,7 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
+            margin-left: var(--sidebar-width);
         }
 
         .main-header {
@@ -751,6 +772,8 @@
                 width: 100%;
                 height: auto;
                 box-shadow: var(--shadow-md);
+                position: relative;
+                height: auto;
             }
 
             .sidebar-content {
@@ -765,6 +788,7 @@
 
             .main {
                 padding: 24px;
+                margin-left: 0;
             }
 
             .main h1 {
@@ -791,6 +815,7 @@
 
             .main {
                 padding: 20px;
+                margin-left: 0;
             }
 
             .main h1 {
@@ -917,11 +942,11 @@
         <div class="logo-container">
             <!-- Logo Placeholder - Replace with actual college logo -->
             <div class="logo-placeholder">
-			<img src="rvs-logo.jpg" 
-             alt="RVS College Logo"
-             style="width: 100%; height: 100%; object-fit: contain;"
-             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<span style=\'color:white;font-weight:bold;font-size:18px\'>RVS</span>';">
-			</div>
+                <img src="rvs-logo.jpg" 
+                     alt="RVS College Logo"
+                     style="width: 100%; height: 100%; object-fit: contain;"
+                     onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<span style=\'color:white;font-weight:bold;font-size:18px\'>RVS</span>';">
+            </div>
             <div class="college-info">
                 <h2>RVS College of Engineering</h2>
                 <div class="department">Department of AI & Data Science</div>
@@ -5580,11 +5605,11 @@ const roadmaps = {
                         <div class="project-card">
                             <span class="difficulty advanced">Advanced</span>
                             <h4>End-to-end AI Product Strategy</h4>
-                            <p>Develop a complete product strategy for an AI startup. Cover market analysis, product vision, GTM strategy, and funding roadmap.</p>
+                            <p>Develop a complete product strategy for an AI startup</p>
                             <div class="project-tags">
                                 <span class="project-tag">Strategy</span>
-                                <span class="project-tag">Startup</span>
-                                <span class="project-tag">GTM</span>
+                                <span class="project-tag">AI Product</span>
+                                <span class="project-tag">Business</span>
                             </div>
                         </div>
                     </div>
@@ -5596,19 +5621,19 @@ const roadmaps = {
                     
                     <div class="resource-item">
                         <!-- <h4>University Courses</h4>
-                        <p>BUS401: Product Management, BUS402: Technology Strategy, BUS403: Innovation Management, BUS404: Entrepreneurship</p>
+                        <p>BUS401: Product Management, CS501: AI Fundamentals, BUS402: Business Strategy, BUS403: Marketing Strategy</p>
                         <span class="resource-type">Academic</span> -->
                     </div>
 
                     <div class="resource-item">
                         <h4>Books</h4>
-                        <p>"Cracking the PM Interview" by Gayle Laakmann McDowell, "Inspired" by Marty Cagan, "The Lean Startup" by Eric Ries</p>
+                        <p>"The AI Product Manager's Handbook" by Irene Bratsis, "Inspired: How to Create Tech Products Customers Love" by Marty Cagan</p>
                         <span class="resource-type">Reading</span>
                     </div>
 
                     <div class="resource-item">
-                        <h4>Professional Development</h4>
-                        <p>Product Management Certifications, AI/ML courses for PMs, industry conferences, mentorship programs</p>
+                        <h4>Certifications</h4>
+                        <p>Product Management Certifications, Agile/Scrum Certifications, AI/ML Business Certifications</p>
                         <span class="resource-type">Professional</span>
                     </div>
                 </div>
@@ -5618,10 +5643,10 @@ const roadmaps = {
                     <h3>🚀 Next Steps After This Roadmap</h3>
                     <ul class="steps-list">
                         <li>Build a portfolio of AI product case studies</li>
-                        <li>Get certified in product management frameworks</li>
+                        <li>Get certified in product management methodologies</li>
                         <li>Network with AI product leaders</li>
-                        <li>Practice product case interviews</li>
-                        <li>Consider MBA or specialized product management programs</li>
+                        <li>Stay updated on AI technology trends</li>
+                        <li>Prepare for AI product manager interviews</li>
                     </ul>
                 </div>
 
@@ -5636,78 +5661,56 @@ const roadmaps = {
     }
 };
 
-// ========== JAVASCRIPT FUNCTIONS ==========
-let currentActive = null;
-
-function loadRole(roleId) {
+// JavaScript for handling role selection
+document.addEventListener('DOMContentLoaded', function() {
+    const roleElements = document.querySelectorAll('.role');
     const mainContent = document.getElementById('mainContent');
     
-    // Show loading state
-    mainContent.innerHTML = `
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <h3>Loading Detailed Roadmap</h3>
-            <p>Preparing comprehensive learning path...</p>
-        </div>
-    `;
-    
-    // Update active role in sidebar
-    if (currentActive) {
-        currentActive.classList.remove('active');
-    }
-    
-    // Find and activate the clicked role
-    const allRoles = document.querySelectorAll('.role');
-    allRoles.forEach(role => {
-        if (role.getAttribute('data-role') === roleId) {
-            role.classList.add('active');
-            currentActive = role;
-        }
-    });
-    
-    // Load roadmap after short delay
-    setTimeout(() => {
-        if (roadmaps[roleId]) {
-            mainContent.innerHTML = `
-                <button class="back-button" onclick="goHome()">
-                    <i class="fas fa-arrow-left"></i> Back to Overview
-                </button>
-                ${roadmaps[roleId].content}
-            `;
+    // Add click event to each role
+    roleElements.forEach(role => {
+        role.addEventListener('click', function() {
+            const roleId = this.getAttribute('data-role');
             
-            // Add smooth animations
-            setTimeout(() => {
-                const cards = mainContent.querySelectorAll('.skill-group, .tool-card, .project-card, .resource-item');
-                cards.forEach((card, index) => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    
-                    setTimeout(() => {
-                        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }, 100);
-        } else {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <h2 style="color: #dc2626; margin-bottom: 16px;">⚠️ Roadmap Not Found</h2>
-                    <p style="color: #6b7280; margin-bottom: 24px;">The roadmap for "${roleId}" is not available.</p>
-                    <button onclick="goHome()" class="back-button">
-                        <i class="fas fa-arrow-left"></i> Return to Overview
-                    </button>
-                </div>
-            `;
-        }
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 300);
-}
+            // Remove active class from all roles
+            roleElements.forEach(r => r.classList.remove('active'));
+            
+            // Add active class to clicked role
+            this.classList.add('active');
+            
+            // Load the roadmap content
+            if (roadmaps[roleId]) {
+                const roadmap = roadmaps[roleId];
+                
+                // Create back button
+                const backButton = `<button class="back-button" onclick="goBackToHome()">
+                    <i class="fas fa-arrow-left"></i> Back to All Roadmaps
+                </button>`;
+                
+                // Update main content
+                mainContent.innerHTML = `
+                    <div class="main-header">
+                        <h1>${roadmap.title}</h1>
+                        <p class="main-subtitle">${roadmap.subtitle}</p>
+                    </div>
+                    ${backButton}
+                    ${roadmap.content}
+                `;
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        });
+    });
+});
 
-function goHome() {
+// Function to go back to home view
+function goBackToHome() {
     const mainContent = document.getElementById('mainContent');
+    
+    // Remove active class from all roles
+    document.querySelectorAll('.role').forEach(r => r.classList.remove('active'));
+    
+    // Reset to home view
     mainContent.innerHTML = `
         <div class="main-header">
             <h1>AI & Data Science <span class="text-gradient">Career Roadmaps</span></h1>
@@ -5727,7 +5730,6 @@ function goHome() {
                 <ul class="feature-list">
                     <li><strong>Select a career path</strong> from the sidebar to view detailed roadmap</li>
                     <li><strong>Follow semester-wise progression</strong> from foundational to advanced topics</li>
-                    <!-- <li><strong>Download PDF versions</strong> for offline reference and planning</li> -->
                     <li><strong>Complete recommended projects</strong> to build practical portfolio</li>
                     <li><strong>Consult with department faculty</strong> for personalized guidance</li>
                 </ul>
@@ -5735,143 +5737,9 @@ function goHome() {
         </div>
     `;
     
-    // Remove active state from all roles
-    if (currentActive) {
-        currentActive.classList.remove('active');
-        currentActive = null;
-    }
+    // Scroll to top
+    window.scrollTo(0, 0);
 }
-
-// PDF Download Function with RVS College Footer
-function downloadPDF(roleId) {
-    if (roadmaps[roleId]) {
-        const { title, subtitle } = roadmaps[roleId];
-        
-        // Create PDF content with RVS College footer
-        const pdfContent = `
-========================================================================
-RVS COLLEGE OF ENGINEERING, DINDIGUL
-Department of Artificial Intelligence and Data Science
-========================================================================
-
-${title.toUpperCase()}
-${subtitle}
-
-Generated: ${new Date().toLocaleDateString('en-IN', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-})}
-
-------------------------------------------------------------------------
-OVERVIEW
-------------------------------------------------------------------------
-This comprehensive roadmap provides a structured learning path for 
-${title} students at RVS College of Engineering.
-
-The roadmap is divided into semesters with specific skills, tools, 
-and projects to help you build expertise systematically.
-
-------------------------------------------------------------------------
-KEY COMPONENTS
-------------------------------------------------------------------------
-1. Semester-wise progression from foundational to advanced topics
-2. Technical skills and tools required for each phase
-3. Practical projects to build your portfolio
-4. Recommended resources and next steps
-
-------------------------------------------------------------------------
-COLLEGE RESOURCES
-------------------------------------------------------------------------
-- Department of AI & Data Science Faculty Guidance
-- College Library Resources
-- Laboratory Facilities
-- Industry Collaboration Programs
-- Placement Cell Support
-
-------------------------------------------------------------------------
-CONTACT INFORMATION
-------------------------------------------------------------------------
-Department of Artificial Intelligence and Data Science
-RVS College of Engineering
-Dindigul, Tamil Nadu
-Email: ai-ds@rvscollege.edu.in
-Website: www.rvscollege.edu.in
-
-------------------------------------------------------------------------
-DISCLAIMER
-------------------------------------------------------------------------
-This roadmap is for educational purposes. The college reserves the 
-right to update curriculum and requirements. Students should consult 
-with faculty advisors for personalized guidance.
-
-Note: This is a simplified version. Visit the online portal for 
-interactive content, resources, and detailed project descriptions.
-
-========================================================================
-© ${new Date().getFullYear()} RVS College of Engineering, Dindigul
-All rights reserved.
-========================================================================
-        `;
-        
-        // Create blob and download link
-        const blob = new Blob([pdfContent], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${roleId.replace('-', '_')}_roadmap_RVS_College.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        
-        // Show success message
-        alert(`PDF downloaded: ${title}\n\nThis roadmap includes the official RVS College of Engineering footer with department contact information.`);
-    }
-}
-
-// Add click handlers to sidebar roles
-document.addEventListener('DOMContentLoaded', function() {
-    const roles = document.querySelectorAll('.role');
-    roles.forEach(role => {
-        role.addEventListener('click', function() {
-            const roleId = this.getAttribute('data-role');
-            loadRole(roleId);
-        });
-    });
-    
-    // Add icons to roles
-    const roleIcons = {
-        'data-analyst': 'chart-bar',
-        'bi-analyst': 'chart-line',
-        'product-analyst': 'shopping-cart',
-        'junior-data-engineer': 'database',
-        'research-assistant': 'flask',
-        'data-scientist': 'brain',
-        'ml-engineer': 'robot',
-        'data-engineer': 'server',
-        'ai-engineer': 'cogs',
-        'cv-engineer': 'eye',
-        'nlp-engineer': 'language',
-        'analytics-consultant': 'briefcase',
-        'ai-product-manager': 'tasks'
-    };
-    
-    roles.forEach(role => {
-        const roleId = role.getAttribute('data-role');
-        if (roleIcons[roleId]) {
-            const icon = document.createElement('i');
-            icon.className = `fas fa-${roleIcons[roleId]}`;
-            role.insertBefore(icon, role.firstChild);
-        }
-    });
-    
-    // Debug info
-    console.log('RVS College Career Roadmaps Portal Loaded');
-    console.log('Complete roadmaps available for all 13 roles');
-    console.log('PDF download feature includes RVS College footer');
-});
 </script>
-
 </body>
 </html>
