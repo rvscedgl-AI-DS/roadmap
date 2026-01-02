@@ -40,6 +40,49 @@
             line-height: 1.6;
         }
 
+        /* ========== HAMBURGER MENU ========== */
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            background: var(--primary-blue);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .hamburger-menu:hover {
+            background: #1e40af;
+        }
+
+        .hamburger-menu i {
+            font-size: 20px;
+        }
+
+        /* Overlay when sidebar is open on mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
         /* ========== SIDEBAR WITH COLLEGE BRANDING ========== */
         .sidebar {
             width: var(--sidebar-width);
@@ -50,9 +93,10 @@
             flex-direction: column;
             box-shadow: var(--shadow-lg);
             position: fixed;
-            z-index: 10;
+            z-index: 999;
             height: 100vh;
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
         .college-header {
@@ -209,6 +253,7 @@
             padding: 40px;
             overflow-y: auto;
             margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
         }
 
         .main-header {
@@ -762,33 +807,72 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #1e40af;
+            transform: translateY(-3px);
+        }
+
         /* ========== MOBILE RESPONSIVE ========== */
         @media (max-width: 1024px) {
             body {
                 flex-direction: column;
             }
 
+            .hamburger-menu {
+                display: flex;
+            }
+
             .sidebar {
-                width: 100%;
-                height: auto;
-                box-shadow: var(--shadow-md);
-                position: relative;
-                height: auto;
+                width: var(--sidebar-width);
+                height: 100vh;
+                box-shadow: var(--shadow-lg);
+                position: fixed;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .sidebar-content {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 20px;
+                display: block;
             }
 
             .sidebar-section {
-                margin-bottom: 0;
+                margin-bottom: 28px;
             }
 
             .main {
-                padding: 24px;
+                padding: 70px 24px 24px;
                 margin-left: 0;
+                width: 100%;
             }
 
             .main h1 {
@@ -809,13 +893,13 @@
         }
 
         @media (max-width: 640px) {
-            .sidebar-content {
-                grid-template-columns: 1fr;
+            .sidebar {
+                width: 85%;
+                max-width: 300px;
             }
 
             .main {
-                padding: 20px;
-                margin-left: 0;
+                padding: 70px 20px 20px;
             }
 
             .main h1 {
@@ -936,8 +1020,16 @@
 
 <body>
 
+<!-- ========== HAMBURGER MENU TOGGLE ========== -->
+<div class="hamburger-menu" id="hamburgerMenu">
+    <i class="fas fa-bars"></i>
+</div>
+
+<!-- Overlay for mobile when sidebar is open -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- ========== SIDEBAR WITH COLLEGE BRANDING ========== -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="college-header">
         <div class="logo-container">
             <!-- Logo Placeholder - Replace with actual college logo -->
@@ -1042,12 +1134,16 @@
             <ul class="feature-list">
                 <li><strong>Select a career path</strong> from the sidebar to view detailed roadmap</li>
                 <li><strong>Follow semester-wise progression</strong> from foundational to advanced topics</li>
-                <!-- <li><strong>Download PDF versions</strong> for offline reference and planning</li> -->
                 <li><strong>Complete recommended projects</strong> to build practical portfolio</li>
                 <li><strong>Consult with department faculty</strong> for personalized guidance</li>
             </ul>
         </div>
     </div>
+</div>
+
+<!-- Back to top button -->
+<div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
 </div>
 
 <!-- ========== DETAILED ROADMAP TEMPLATES ========== -->
@@ -1369,12 +1465,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS201: Data Structures, MATH205: Probability & Statistics, CS301: Database Systems, CS401: Data Mining</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"Python for Data Analysis" by Wes McKinney, "Storytelling with Data" by Cole Nussbaumer Knaflic</p>
                         <span class="resource-type">Reading</span>
@@ -1398,13 +1488,6 @@ const roadmaps = {
                         <li>Prepare for data analyst internship interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('data-analyst')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -1723,12 +1806,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS301: Database Systems, CS302: Data Warehousing, CS401: Business Intelligence, CS402: Data Visualization</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Certifications</h4>
                         <p>Microsoft Power BI Certification, Tableau Desktop Specialist, Google Data Analytics Certificate</p>
                         <span class="resource-type">Professional</span>
@@ -1752,13 +1829,6 @@ const roadmaps = {
                         <li>Prepare for BI analyst interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('bi-analyst')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -2078,12 +2148,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                     <!--    <h4>University Courses</h4>
-                        <p>CS305: Product Management, CS406: Advanced Statistics, CS407: Experimental Design, CS408: User Research Methods</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"Lean Analytics" by Alistair Croll & Benjamin Yoskovitz, "Inspired" by Marty Cagan</p>
                         <span class="resource-type">Reading</span>
@@ -2107,13 +2171,6 @@ const roadmaps = {
                         <li>Prepare for product analyst interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('product-analyst')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -2432,12 +2489,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS301: Database Systems, CS303: Distributed Systems, CS304: Cloud Computing, CS405: Data Engineering</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Certifications</h4>
                         <p>AWS Certified Data Engineer - Associate, Google Cloud Professional Data Engineer</p>
                         <span class="resource-type">Professional</span>
@@ -2461,13 +2512,6 @@ const roadmaps = {
                         <li>Prepare for data engineering interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('junior-data-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -2786,12 +2830,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>RES101: Research Methodology, STAT301: Advanced Statistics, WRIT201: Academic Writing, ETH101: Research Ethics</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"The Craft of Research" by Booth et al., "Doing Data Science" by Cathy O'Neil & Rachel Schutt</p>
                         <span class="resource-type">Reading</span>
@@ -2815,13 +2853,6 @@ const roadmaps = {
                         <li>Consider graduate studies</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('research-assistant')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -3171,13 +3202,6 @@ const roadmaps = {
                         <li>Prepare for data science interviews (statistics + ML)</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('data-scientist')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -3496,12 +3520,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS410: Machine Learning Engineering, CS411: Distributed Systems, CS412: Cloud Computing, CS413: DevOps</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"Building Machine Learning Powered Applications" by Emmanuel Ameisen, "MLOps Engineering at Scale" by Carl Osipov</p>
                         <span class="resource-type">Reading</span>
@@ -3525,13 +3543,6 @@ const roadmaps = {
                         <li>Prepare for ML engineering interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('ml-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -3850,12 +3861,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS405: Data Engineering, CS406: Big Data Systems, CS407: Cloud Computing, CS408: Distributed Systems</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Certifications</h4>
                         <p>AWS Certified Data Engineer - Associate, Google Cloud Professional Data Engineer, Azure Data Engineer</p>
                         <span class="resource-type">Professional</span>
@@ -3879,13 +3884,6 @@ const roadmaps = {
                         <li>Prepare for data engineering interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('data-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -4204,12 +4202,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS501: Deep Learning, CS502: Computer Vision, CS503: Natural Language Processing, CS504: AI System Design</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Certifications</h4>
                         <p>TensorFlow Developer Certificate, AWS Certified Machine Learning Specialty, Google Professional ML Engineer</p>
                         <span class="resource-type">Professional</span>
@@ -4233,13 +4225,6 @@ const roadmaps = {
                         <li>Build a portfolio of production AI projects</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('ai-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -4558,12 +4543,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>CS502: Computer Vision, CS503: Digital Image Processing, CS504: Deep Learning for Vision, CS505: 3D Vision</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"Computer Vision: Algorithms and Applications" by Richard Szeliski, "Deep Learning for Computer Vision" by Rajalingappaa Shanmugamani</p>
                         <span class="resource-type">Reading</span>
@@ -4587,13 +4566,6 @@ const roadmaps = {
                         <li>Prepare for computer vision research or industry roles</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('cv-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -4912,12 +4884,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                       <!--  <h4>University Courses</h4>
-                        <p>CS503: Natural Language Processing, CS504: Deep Learning, CS505: Computational Linguistics, CS506: Speech Processing</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
                         <p>"Speech and Language Processing" by Daniel Jurafsky & James H. Martin, "Natural Language Processing with Transformers" by Lewis Tunstall et al.</p>
                         <span class="resource-type">Reading</span>
@@ -4941,13 +4907,6 @@ const roadmaps = {
                         <li>Prepare for NLP research or industry roles</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('nlp-engineer')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -5266,12 +5225,6 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>BUS301: Business Strategy, BUS302: Financial Management, BUS303: Marketing Analytics, BUS304: Operations Management</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Case Study Resources</h4>
                         <p>Consulting case frameworks, business case studies, industry analysis reports, Harvard Business Review</p>
                         <span class="resource-type">Professional</span>
@@ -5295,13 +5248,6 @@ const roadmaps = {
                         <li>Network with consulting professionals</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('analytics-consultant')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     },
@@ -5593,23 +5539,23 @@ const roadmaps = {
 
                         <div class="project-card">
                             <span class="difficulty intermediate">Intermediate</span>
-                            <h4>AI Feature PRD</h4>
-                            <p>Write a detailed Product Requirements Document for an AI feature. Include user stories, technical requirements, and success criteria.</p>
+                            <h4>AI Feature Specification</h4>
+                            <p>Write a complete product requirements document for an AI feature including success metrics, data requirements, and ethical considerations.</p>
                             <div class="project-tags">
                                 <span class="project-tag">PRD</span>
                                 <span class="project-tag">Requirements</span>
-                                <span class="project-tag">Documentation</span>
+                                <span class="project-tag">AI Ethics</span>
                             </div>
                         </div>
 
                         <div class="project-card">
                             <span class="difficulty advanced">Advanced</span>
-                            <h4>End-to-end AI Product Strategy</h4>
-                            <p>Develop a complete product strategy for an AI startup</p>
+                            <h4>AI Product Launch Strategy</h4>
+                            <p>Develop a complete go-to-market strategy for an AI product including user testing, launch planning, and post-launch optimization.</p>
                             <div class="project-tags">
-                                <span class="project-tag">Strategy</span>
-                                <span class="project-tag">AI Product</span>
-                                <span class="project-tag">Business</span>
+                                <span class="project-tag">GTM Strategy</span>
+                                <span class="project-tag">Launch Planning</span>
+                                <span class="project-tag">Product Management</span>
                             </div>
                         </div>
                     </div>
@@ -5620,21 +5566,15 @@ const roadmaps = {
                     <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📚 Recommended Resources</h3>
                     
                     <div class="resource-item">
-                        <!-- <h4>University Courses</h4>
-                        <p>BUS401: Product Management, CS501: AI Fundamentals, BUS402: Business Strategy, BUS403: Marketing Strategy</p>
-                        <span class="resource-type">Academic</span> -->
-                    </div>
-
-                    <div class="resource-item">
                         <h4>Books</h4>
-                        <p>"The AI Product Manager's Handbook" by Irene Bratsis, "Inspired: How to Create Tech Products Customers Love" by Marty Cagan</p>
+                        <p>"Inspired" by Marty Cagan, "The Lean Product Playbook" by Dan Olsen, "AI Superpowers" by Kai-Fu Lee</p>
                         <span class="resource-type">Reading</span>
                     </div>
 
                     <div class="resource-item">
-                        <h4>Certifications</h4>
-                        <p>Product Management Certifications, Agile/Scrum Certifications, AI/ML Business Certifications</p>
-                        <span class="resource-type">Professional</span>
+                        <h4>Online Resources</h4>
+                        <p>Product Management blogs, AI ethics frameworks, case studies on successful AI products</p>
+                        <span class="resource-type">Reference</span>
                     </div>
                 </div>
 
@@ -5643,103 +5583,148 @@ const roadmaps = {
                     <h3>🚀 Next Steps After This Roadmap</h3>
                     <ul class="steps-list">
                         <li>Build a portfolio of AI product case studies</li>
-                        <li>Get certified in product management methodologies</li>
-                        <li>Network with AI product leaders</li>
-                        <li>Stay updated on AI technology trends</li>
+                        <li>Network with AI product managers in industry</li>
+                        <li>Learn about AI ethics and responsible AI practices</li>
+                        <li>Gain experience with AI/ML tools and platforms</li>
                         <li>Prepare for AI product manager interviews</li>
                     </ul>
                 </div>
-
-                <!-- Action Buttons -->
-                <!-- <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="downloadPDF('ai-product-manager')">
-                        <i class="fas fa-download"></i> Download PDF Roadmap
-                    </button>
-                </div> -->
             </div>
         `
     }
 };
 
-// JavaScript for handling role selection
+// ========== MOBILE MENU FUNCTIONALITY ==========
 document.addEventListener('DOMContentLoaded', function() {
-    const roleElements = document.querySelectorAll('.role');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
     const mainContent = document.getElementById('mainContent');
+    const backToTop = document.getElementById('backToTop');
     
-    // Add click event to each role
-    roleElements.forEach(role => {
+    // Toggle sidebar on hamburger click
+    hamburgerMenu.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+    });
+    
+    // Close sidebar when clicking overlay
+    sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+    });
+    
+    // Original roadmap loading functionality
+    let currentRole = null;
+    
+    // Initialize role click handlers
+    document.querySelectorAll('.role').forEach(role => {
         role.addEventListener('click', function() {
             const roleId = this.getAttribute('data-role');
             
-            // Remove active class from all roles
-            roleElements.forEach(r => r.classList.remove('active'));
-            
-            // Add active class to clicked role
-            this.classList.add('active');
-            
-            // Load the roadmap content
-            if (roadmaps[roleId]) {
-                const roadmap = roadmaps[roleId];
+            // Close sidebar on mobile
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
                 
-                // Create back button
-                const backButton = `<button class="back-button" onclick="goBackToHome()">
-                    <i class="fas fa-arrow-left"></i> Back to All Roadmaps
-                </button>`;
-                
-                // Update main content
-                mainContent.innerHTML = `
-                    <div class="main-header">
-                        <h1>${roadmap.title}</h1>
-                        <p class="main-subtitle">${roadmap.subtitle}</p>
-                    </div>
-                    ${backButton}
-                    ${roadmap.content}
-                `;
-                
-                // Scroll to top
-                window.scrollTo(0, 0);
+                // Scroll to main content after a short delay
+                setTimeout(() => {
+                    mainContent.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             }
+            
+            // Load roadmap content
+            loadRoadmap(roleId);
         });
     });
+    
+    // Load roadmap function
+    function loadRoadmap(roleId) {
+        const roadmap = roadmaps[roleId];
+        if (!roadmap) return;
+        
+        currentRole = roleId;
+        
+        // Update active state
+        document.querySelectorAll('.role').forEach(r => r.classList.remove('active'));
+        document.querySelector(`.role[data-role="${roleId}"]`).classList.add('active');
+        
+        // Update main content
+        mainContent.innerHTML = `
+            <button class="back-button" id="backButton">
+                <i class="fas fa-arrow-left"></i> Back to All Roadmaps
+            </button>
+            ${roadmap.content}
+        `;
+        
+        // Add back button functionality
+        document.getElementById('backButton').addEventListener('click', function() {
+            mainContent.innerHTML = `
+                <div class="main-header">
+                    <h1>AI & Data Science <span class="text-gradient">Career Roadmaps</span></h1>
+                    <p class="main-subtitle">
+                        Comprehensive technical learning paths designed for undergraduate students at RVS College of Engineering.
+                    </p>
+                </div>
+                <div class="content-wrapper">
+                    <p style="margin-bottom: 24px; font-size: 16px; color: #4b5563;">
+                        Each roadmap provides detailed technical skills, required courses, tools, and projects aligned with university curriculum.
+                        Developed by the Department of Artificial Intelligence and Data Science.
+                    </p>
+                    <div class="welcome-box">
+                        <h3>How to Use This Portal</h3>
+                        <ul class="feature-list">
+                            <li><strong>Select a career path</strong> from the sidebar to view detailed roadmap</li>
+                            <li><strong>Follow semester-wise progression</strong> from foundational to advanced topics</li>
+                            <li><strong>Complete recommended projects</strong> to build practical portfolio</li>
+                            <li><strong>Consult with department faculty</strong> for personalized guidance</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Reset active state
+            document.querySelectorAll('.role').forEach(r => r.classList.remove('active'));
+            currentRole = null;
+        });
+        
+        // Scroll to top of content
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Show/hide back to top button
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+    
+    // Back to top functionality
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Close sidebar when window is resized to desktop
+    function handleResize() {
+        if (window.innerWidth > 1024) {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        }
+    }
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Initial check
+    handleResize();
 });
-
-// Function to go back to home view
-function goBackToHome() {
-    const mainContent = document.getElementById('mainContent');
-    
-    // Remove active class from all roles
-    document.querySelectorAll('.role').forEach(r => r.classList.remove('active'));
-    
-    // Reset to home view
-    mainContent.innerHTML = `
-        <div class="main-header">
-            <h1>AI & Data Science <span class="text-gradient">Career Roadmaps</span></h1>
-            <p class="main-subtitle">
-                Comprehensive technical learning paths designed for undergraduate students at RVS College of Engineering.
-            </p>
-        </div>
-
-        <div class="content-wrapper">
-            <p style="margin-bottom: 24px; font-size: 16px; color: #4b5563;">
-                Each roadmap provides detailed technical skills, required courses, tools, and projects aligned with university curriculum.
-                Developed by the Department of Artificial Intelligence and Data Science.
-            </p>
-
-            <div class="welcome-box">
-                <h3>How to Use This Portal</h3>
-                <ul class="feature-list">
-                    <li><strong>Select a career path</strong> from the sidebar to view detailed roadmap</li>
-                    <li><strong>Follow semester-wise progression</strong> from foundational to advanced topics</li>
-                    <li><strong>Complete recommended projects</strong> to build practical portfolio</li>
-                    <li><strong>Consult with department faculty</strong> for personalized guidance</li>
-                </ul>
-            </div>
-        </div>
-    `;
-    
-    // Scroll to top
-    window.scrollTo(0, 0);
-}
-</script>
+    </script>
 </body>
 </html>
